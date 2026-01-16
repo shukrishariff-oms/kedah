@@ -133,21 +133,41 @@ export default function Home() {
                     </div>
                     {/* Conditionally render Map or Political Dashboard */}
                     {selectedExperience === 'Politik' ? (
-                        <div className="space-y-10">
-                            <Map
-                                markers={places}
-                                politicalData={politicalData}
-                                politicsMode={politicsMode}
-                                districts={districts}
-                                interactive={true}
-                                onDistrictSelect={setSelectedDistrict}
-                                lockView={true}
-                            />
+                        <div className="col-span-12 space-y-4">
+                            {/* Two Column Layout: Details | Map */}
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[500px]">
+                                {/* Left Column: Detailed View */}
+                                <div className="lg:col-span-4 h-full relative z-10">
+                                    <RepresentativeDetail
+                                        selectedDistrict={selectedDistrict}
+                                        districts={districts}
+                                        politicalData={politicalData}
+                                        politicsMode={politicsMode}
+                                    />
+                                </div>
+
+                                {/* Right Column: Map */}
+                                <div className="lg:col-span-8 h-full bg-slate-50/50 rounded-[3rem] p-4 lg:p-0">
+                                    <Map
+                                        markers={places}
+                                        politicalData={politicalData}
+                                        politicsMode={politicsMode}
+                                        districts={districts}
+                                        interactive={true}
+                                        onDistrictSelect={setSelectedDistrict}
+                                        lockView={true}
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Bottom Carousel */}
                             <PoliticalDashboard
                                 politicalData={politicalData}
                                 politicsMode={politicsMode}
                                 selectedDistrict={selectedDistrict}
                                 districts={districts}
+                                onSelectDistrict={setSelectedDistrict}
                             />
                         </div>
                     ) : (
