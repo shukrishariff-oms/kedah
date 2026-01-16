@@ -3,9 +3,10 @@ import django
 import json
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 import sys
-sys.path.append(os.path.join(os.getcwd(), 'backend'))
+# Add the parent directory (project root) to sys.path so we can find 'core'
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/backend')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
 from api.models import District, Place, Photo

@@ -4,7 +4,8 @@ import django
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 import sys
-sys.path.append(os.path.join(os.getcwd(), 'backend'))
+# Fix path for Render: Add backend/ directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/backend')
 django.setup()
 
 from django.contrib.auth import get_user_model
