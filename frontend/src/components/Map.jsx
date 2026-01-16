@@ -79,7 +79,56 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
         }
     }, []);
 
-    // ... (rest of logic)
+    // Determine which GeoJSON data to show
+    const isDunMode = politicalData.length > 0 && politicsMode === 'dun';
+    const isParlimenMode = politicalData.length > 0 && politicsMode === 'parlimen';
+
+    let geoJsonData = kedahDistricts;
+    if (isDunMode) geoJsonData = kedahDUNs;
+    if (isParlimenMode) geoJsonData = kedahParliaments;
+
+    const districtStyle = (feature) => {
+        // District Logic
+        if (!isDunMode) {
+            const name = feature.properties.name;
+            const isSelected = spotlight && spotlight.name === name;
+            return {
+                fillColor: DISTRICT_COLORS[name] || '#9e9e9e',
+                weight: isSelected ? 4 : 2,
+                opacity: 1,
+                color: isSelected ? '#ffd700' : 'white',
+                fillOpacity: isSelected ? 0.9 : 0.7
+            };
+        }
+
+        // DUN Logic
+        if (isDunMode) {
+            const name = feature.properties.dun;
+            const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+            const color = `hsl(${Math.abs(hash) % 360}, 60%, 50%)`;
+
+            return {
+                fillColor: color,
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                fillOpacity: 0.6
+            };
+        }
+
+        // Parliament Logic
+        const name = feature.properties.name;
+        const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+        const color = `hsl(${Math.abs(hash) % 360}, 70%, 40%)`;
+
+        return {
+            fillColor: color,
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            fillOpacity: 0.7
+        };
+    };
 
     const onEachDistrict = (feature, layer) => {
         // Handle District Labels
