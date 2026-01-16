@@ -12,7 +12,7 @@ python manage.py migrate
 
 # --- SEEDING (ONE TIME RUN) ---
 # Un-comment these lines to seed data, then re-comment them next deploy
-python ../scripts/seed_data.py
-python ../scripts/seed_politics_full.py
-python ../scripts/create_superuser.py
+# python ../scripts/seed_data.py
+# python ../scripts/seed_politics_full.py
+# python ../scripts/create_superuser.py
 # ------------------------------
