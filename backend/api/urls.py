@@ -4,7 +4,10 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import DistrictViewSet, PlaceViewSet, PhotoViewSet, StatsView, ParliamentViewSet, DUNViewSet
+from .views import (
+    DistrictViewSet, PlaceViewSet, PhotoViewSet, StatsView, ParliamentViewSet, DUNViewSet,
+    UserDetailView, HealthCheckView
+)
 
 router = DefaultRouter()
 router.register(r'districts', DistrictViewSet)
@@ -18,4 +21,6 @@ urlpatterns = [
     path('stats/', StatsView.as_view(), name='stats'),
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/me/', UserDetailView.as_view(), name='user_detail'),
+    path('health/', HealthCheckView.as_view(), name='health_check'),
 ]
