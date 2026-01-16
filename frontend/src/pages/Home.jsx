@@ -138,9 +138,15 @@ export default function Home() {
                                     politicsMode={politicsMode}
                                     districts={districts}
                                     interactive={true}
+                                    onDistrictSelect={setSelectedDistrict}
                                 />
                             </div>
-                            <PoliticalDashboard politicalData={politicalData} politicsMode={politicsMode} />
+                            <PoliticalDashboard
+                                politicalData={politicalData}
+                                politicsMode={politicsMode}
+                                selectedDistrict={selectedDistrict}
+                                districts={districts}
+                            />
                         </div>
                     ) : (
                         <div className="rounded-3xl overflow-hidden shadow-2xl border-8 border-white/50 bg-white ring-1 ring-slate-100">
@@ -150,6 +156,7 @@ export default function Home() {
                                 politicsMode={politicsMode}
                                 districts={districts}
                                 interactive={true}
+                                onDistrictSelect={setSelectedDistrict}
                             />
                         </div>
                     )}

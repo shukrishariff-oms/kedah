@@ -69,137 +69,95 @@ const DISTRICT_COLORS = {
     'Yan': '#00BCD4'            // Cyan
 };
 
-const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true }) => {
+const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true, onDistrictSelect }) => {
     const [spotlight, setSpotlight] = useState(null);
 
-    // Determine which GeoJSON data to show
-    const isDunMode = politicalData.length > 0 && politicsMode === 'dun';
-    const isParlimenMode = politicalData.length > 0 && politicsMode === 'parlimen';
-
-    let geoJsonData = kedahDistricts;
-    if (isDunMode) geoJsonData = kedahDUNs;
-    if (isParlimenMode) geoJsonData = kedahParliaments;
-
-    const districtStyle = (feature) => {
-        // District Logic
-        if (!isDunMode) {
-            const name = feature.properties.name;
-            const isSelected = spotlight && spotlight.name === name;
-            return {
-                fillColor: DISTRICT_COLORS[name] || '#9e9e9e',
-                weight: isSelected ? 4 : 2,
-                opacity: 1,
-                color: isSelected ? '#ffd700' : 'white',
-                fillOpacity: isSelected ? 0.9 : 0.7
-            };
+    // Sync spotlight with external prop if provided (optional, for bidirectional control)
+    useEffect(() => {
+        if (interactive && onDistrictSelect) {
+            // Logic to sync if needed, but primarily we want click -> onDistrictSelect
         }
+    }, []);
 
-        // DUN Logic
-        if (isDunMode) {
-            const name = feature.properties.dun;
-            const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
-            const color = `hsl(${Math.abs(hash) % 360}, 60%, 50%)`;
+    // ... (rest of logic)
 
-            return {
-                fillColor: color,
-                weight: 1,
-                opacity: 1,
-                color: 'white',
-                fillOpacity: 0.6
-            };
-        }
-
-        // Parliament Logic
-        const name = feature.properties.name;
-        const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
-        const color = `hsl(${Math.abs(hash) % 360}, 70%, 40%)`;
-
-        return {
-            fillColor: color,
-            weight: 2,
-            opacity: 1,
-            color: 'white',
-            fillOpacity: 0.7
-        };
-    };
-
+    // District Click Handler
     const onEachDistrict = (feature, layer) => {
-        // Handle District Labels
-        if (!isDunMode) {
-            const name = feature.properties.name;
-            layer.bindTooltip(name, {
-                permanent: false,
-                direction: 'center',
-                className: 'district-label font-bold text-xs'
-            });
-
-            if (interactive) {
-                layer.on({
-                    mouseover: (e) => {
-                        const layer = e.target;
-                        if (!spotlight || spotlight.name !== name) {
-                            layer.setStyle({ fillOpacity: 0.9, weight: 3 });
+        // ...
+        if (interactive) {
+            layer.on({
+                mouseover: (e) => {
+                    // ...
+                },
+                mouseout: (e) => {
+                    // ...
+                },
+                click: () => {
+                    const name = feature.properties.name;
+                    const districtData = districts.find(d => d.name === name);
+                    setSpotlight(districtData || { name: name });
+                    if (onDistrictSelect) {
+                        // Pass the slug if available, else name. Home.jsx expects slug for API but name might be used for UI.
+                        // Looking at Home.jsx, selectedDistrict uses slug.
+                        // districts array has { id, name, slug }
+                        if (districtData) {
+                            onDistrictSelect(districtData.slug); // Send slug to Home
+                        } else {
+                            // Fallback or handle error
+                            console.warn("District data not found for:", name);
                         }
-                    },
-                    mouseout: (e) => {
-                        const layer = e.target;
-                        if (!spotlight || spotlight.name !== name) {
-                            layer.setStyle({ fillOpacity: 0.7, weight: 2 });
-                        }
-                    },
-                    click: () => {
-                        const districtData = districts.find(d => d.name === name);
-                        setSpotlight(districtData || { name: name });
                     }
-                });
-            }
+                }
+            });
         }
+        // ...
+    };
         // Handle DUN Labels
         else if (isDunMode) {
-            const name = feature.properties.dun; // Format: "N.01 Ayer Hangat"
+    const name = feature.properties.dun; // Format: "N.01 Ayer Hangat"
 
-            layer.bindTooltip(name, {
-                permanent: false,
-                direction: 'center',
-                className: 'dun-label font-bold text-[10px]'
-            });
+    layer.bindTooltip(name, {
+        permanent: false,
+        direction: 'center',
+        className: 'dun-label font-bold text-[10px]'
+    });
 
-            if (interactive) {
-                layer.on({
-                    mouseover: (e) => {
-                        e.target.setStyle({ fillOpacity: 0.8, weight: 2 });
-                    },
-                    mouseout: (e) => {
-                        e.target.setStyle({ fillOpacity: 0.6, weight: 1 });
-                    }
-                });
+    if (interactive) {
+        layer.on({
+            mouseover: (e) => {
+                e.target.setStyle({ fillOpacity: 0.8, weight: 2 });
+            },
+            mouseout: (e) => {
+                e.target.setStyle({ fillOpacity: 0.6, weight: 1 });
             }
-        }
-        // Handle Parliament Labels & Interaction
-        else {
-            const code = feature.properties.code;
-            const name = feature.properties.name;
+        });
+    }
+}
+// Handle Parliament Labels & Interaction
+else {
+    const code = feature.properties.code;
+    const name = feature.properties.name;
 
-            layer.bindTooltip(`${code} ${name}`, {
-                permanent: false,
-                direction: 'center',
-                className: 'parliament-label font-black text-xs text-white drop-shadow-md'
-            });
+    layer.bindTooltip(`${code} ${name}`, {
+        permanent: false,
+        direction: 'center',
+        className: 'parliament-label font-black text-xs text-white drop-shadow-md'
+    });
 
-            if (interactive) {
-                layer.on({
-                    mouseover: (e) => {
-                        e.target.setStyle({ fillOpacity: 0.9, weight: 4 });
-                    },
-                    mouseout: (e) => {
-                        e.target.setStyle({ fillOpacity: 0.7, weight: 2 });
-                    },
-                    click: (e) => {
-                        // Find matching parliament data from props
-                        const pData = politicalData.find(p => p.code === code);
-                        if (pData) {
-                            // Show popup with info
-                            const popupContent = `
+    if (interactive) {
+        layer.on({
+            mouseover: (e) => {
+                e.target.setStyle({ fillOpacity: 0.9, weight: 4 });
+            },
+            mouseout: (e) => {
+                e.target.setStyle({ fillOpacity: 0.7, weight: 2 });
+            },
+            click: (e) => {
+                // Find matching parliament data from props
+                const pData = politicalData.find(p => p.code === code);
+                if (pData) {
+                    // Show popup with info
+                    const popupContent = `
                                 <div class="p-4 min-w-[250px] font-sans">
                                     <div class="flex items-center space-x-3 mb-4 border-b pb-3">
                                         <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-kedah-gold shadow-md">
@@ -233,131 +191,131 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                                     </div>
                                 </div>
                             `;
-                            L.popup()
-                                .setLatLng(e.latlng)
-                                .setContent(popupContent)
-                                .openOn(layer._map);
-                        }
-                    }
-                });
+                    L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent(popupContent)
+                        .openOn(layer._map);
+                }
             }
-        }
+        });
+    }
+}
     };
 
-    return (
-        <div className={`relative h-[500px] w-full overflow-hidden group/map transition-all ${interactive ? 'rounded-3xl border-8 border-white bg-kedah-gold shadow-2xl' : ''}`}>
-            <MapContainer
-                center={center}
-                zoom={zoom}
-                className="h-full w-full"
-                style={{ background: interactive ? '#FFD700' : 'transparent' }}
-                scrollWheelZoom={false}
-                zoomControl={interactive} // Initial state
-                dragging={false} // Initial state
-                doubleClickZoom={false}
-                touchZoom={false}
-                attributionControl={false}
-            >
-                <MapInteractionHandler interactive={interactive} />
-                <GeoJSON
-                    key={`${politicsMode}-layer`}
-                    data={geoJsonData}
-                    style={districtStyle}
-                    onEachFeature={onEachDistrict}
-                />
+return (
+    <div className={`relative h-[500px] w-full overflow-hidden group/map transition-all ${interactive ? 'rounded-3xl border-8 border-white bg-kedah-gold shadow-2xl' : ''}`}>
+        <MapContainer
+            center={center}
+            zoom={zoom}
+            className="h-full w-full"
+            style={{ background: interactive ? '#FFD700' : 'transparent' }}
+            scrollWheelZoom={false}
+            zoomControl={interactive} // Initial state
+            dragging={false} // Initial state
+            doubleClickZoom={false}
+            touchZoom={false}
+            attributionControl={false}
+        >
+            <MapInteractionHandler interactive={interactive} />
+            <GeoJSON
+                key={`${politicsMode}-layer`}
+                data={geoJsonData}
+                style={districtStyle}
+                onEachFeature={onEachDistrict}
+            />
 
-                {/* Normal Place Markers */}
-                {(!politicalData || politicalData.length === 0) && markers.map(place => (
-                    <Marker key={place.id} position={[place.lat, place.lng]}>
+            {/* Normal Place Markers */}
+            {(!politicalData || politicalData.length === 0) && markers.map(place => (
+                <Marker key={place.id} position={[place.lat, place.lng]}>
+                    <Popup>
+                        <div className="p-1 min-w-[150px]">
+                            <h3 className="font-black text-sm text-slate-800 uppercase italic tracking-tight">{place.name}</h3>
+                            <p className="text-[10px] font-bold text-kedah-green uppercase tracking-widest mb-2 opacity-70">{place.district_name}</p>
+                            <a
+                                href={`/place/${place.slug}`}
+                                className="bg-kedah-green text-white text-[10px] px-4 py-2 rounded-xl block text-center font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-premium"
+                            >
+                                Eksplorasi
+                            </a>
+                        </div>
+                    </Popup>
+                </Marker>
+            ))}
+
+            {/* Political Markers */}
+            {politicalData && politicalData.length > 0 && politicalData.map(poly => {
+                const lat = politicsMode === 'parlimen' ? poly.parliament_lat : poly.dun_lat;
+                const lng = politicsMode === 'parlimen' ? poly.parliament_lng : poly.dun_lng;
+
+                if (!lat || !lng) return null;
+
+                return (
+                    <Marker key={poly.id} position={[lat, lng]}>
                         <Popup>
-                            <div className="p-1 min-w-[150px]">
-                                <h3 className="font-black text-sm text-slate-800 uppercase italic tracking-tight">{place.name}</h3>
-                                <p className="text-[10px] font-bold text-kedah-green uppercase tracking-widest mb-2 opacity-70">{place.district_name}</p>
-                                <a
-                                    href={`/place/${place.slug}`}
-                                    className="bg-kedah-green text-white text-[10px] px-4 py-2 rounded-xl block text-center font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-premium"
-                                >
-                                    Eksplorasi
-                                </a>
+                            <div className="p-1 min-w-[200px]">
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white ${poly.mp_party?.includes('PAS') || poly.adun_party?.includes('PAS') ? 'bg-green-600' : 'bg-blue-600'}`}>
+                                        YB
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-sm text-slate-800 uppercase italic tracking-tight">{poly.name} ({poly.code})</h3>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{politicsMode === 'parlimen' ? 'Parlimen' : 'DUN'}</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-2">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wakil Rakyat</p>
+                                    <p className="text-sm font-bold text-slate-800 leading-tight mb-1">
+                                        {politicsMode === 'parlimen' ? poly.mp_name : poly.adun_name}
+                                    </p>
+                                    <span className="inline-block px-2 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold text-slate-500">
+                                        {politicsMode === 'parlimen' ? poly.mp_party : poly.adun_party}
+                                    </span>
+                                </div>
                             </div>
                         </Popup>
                     </Marker>
-                ))}
+                );
+            })}
+        </MapContainer>
 
-                {/* Political Markers */}
-                {politicalData && politicalData.length > 0 && politicalData.map(poly => {
-                    const lat = politicsMode === 'parlimen' ? poly.parliament_lat : poly.dun_lat;
-                    const lng = politicsMode === 'parlimen' ? poly.parliament_lng : poly.dun_lng;
-
-                    if (!lat || !lng) return null;
-
-                    return (
-                        <Marker key={poly.id} position={[lat, lng]}>
-                            <Popup>
-                                <div className="p-1 min-w-[200px]">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white ${poly.mp_party?.includes('PAS') || poly.adun_party?.includes('PAS') ? 'bg-green-600' : 'bg-blue-600'}`}>
-                                            YB
-                                        </div>
-                                        <div>
-                                            <h3 className="font-black text-sm text-slate-800 uppercase italic tracking-tight">{poly.name} ({poly.code})</h3>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{politicsMode === 'parlimen' ? 'Parlimen' : 'DUN'}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-2">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wakil Rakyat</p>
-                                        <p className="text-sm font-bold text-slate-800 leading-tight mb-1">
-                                            {politicsMode === 'parlimen' ? poly.mp_name : poly.adun_name}
-                                        </p>
-                                        <span className="inline-block px-2 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold text-slate-500">
-                                            {politicsMode === 'parlimen' ? poly.mp_party : poly.adun_party}
-                                        </span>
-                                    </div>
-                                </div>
-                            </Popup>
-                        </Marker>
-                    );
-                })}
-            </MapContainer>
-
-            {/* District Spotlight Overlay */}
-            {
-                spotlight && (
-                    <div className="absolute top-6 right-6 w-72 glass p-6 rounded-3xl shadow-glass border-white/40 z-[1000] animate-fade-in">
-                        <button
-                            onClick={() => setSpotlight(null)}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-kedah-red transition-colors"
-                        >
-                            ✕
-                        </button>
-                        <div className="flex items-center space-x-2 mb-3">
-                            <div className="w-6 h-6 rounded-full bg-kedah-green flex items-center justify-center text-[10px] text-white font-bold">
-                                K
-                            </div>
-                            <h4 className="font-black text-kedah-green uppercase tracking-tighter text-xl italic">{spotlight.name}</h4>
+        {/* District Spotlight Overlay */}
+        {
+            spotlight && (
+                <div className="absolute top-6 right-6 w-72 glass p-6 rounded-3xl shadow-glass border-white/40 z-[1000] animate-fade-in">
+                    <button
+                        onClick={() => setSpotlight(null)}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-kedah-red transition-colors"
+                    >
+                        ✕
+                    </button>
+                    <div className="flex items-center space-x-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-kedah-green flex items-center justify-center text-[10px] text-white font-bold">
+                            K
                         </div>
-                        {/* Note: In a full implementation, we'd pass district data from Home.jsx */}
-                        <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                            {spotlight.description || `Peneraju keunikan dan warisan Kedah Darul Aman di daerah ${spotlight.name}.`}
-                        </p>
-                        {spotlight.specialties && spotlight.specialties.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Kepakaran Daerah</p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {spotlight.specialties.map(s => (
-                                        <span key={s} className="px-2 py-1 bg-white/50 text-[9px] font-bold text-kedah-green rounded-full shadow-sm">
-                                            {s}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <h4 className="font-black text-kedah-green uppercase tracking-tighter text-xl italic">{spotlight.name}</h4>
                     </div>
-                )
-            }
-        </div >
-    );
+                    {/* Note: In a full implementation, we'd pass district data from Home.jsx */}
+                    <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                        {spotlight.description || `Peneraju keunikan dan warisan Kedah Darul Aman di daerah ${spotlight.name}.`}
+                    </p>
+                    {spotlight.specialties && spotlight.specialties.length > 0 && (
+                        <div className="space-y-2">
+                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Kepakaran Daerah</p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {spotlight.specialties.map(s => (
+                                    <span key={s} className="px-2 py-1 bg-white/50 text-[9px] font-bold text-kedah-green rounded-full shadow-sm">
+                                        {s}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )
+        }
+    </div >
+);
 };
 
 export default Map;
