@@ -3,8 +3,9 @@ import sys
 import django
 
 # Add the project directory to the sys.path
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(BASE_DIR, 'backend'))
+import sys
+# Fix path for Render: Add backend/ directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/backend')
 
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
