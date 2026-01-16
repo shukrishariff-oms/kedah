@@ -139,6 +139,7 @@ export default function Home() {
                                     districts={districts}
                                     interactive={true}
                                     onDistrictSelect={setSelectedDistrict}
+                                    lockView={true}
                                 />
                             </div>
                             <PoliticalDashboard

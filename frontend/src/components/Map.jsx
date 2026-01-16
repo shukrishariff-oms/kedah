@@ -25,11 +25,11 @@ L.Marker.prototype.options.icon = DefaultIcon;
 import { useState } from 'react';
 
 // Component to handle dynamic interaction updates
-const MapInteractionHandler = ({ interactive }) => {
+const MapInteractionHandler = ({ interactive, lockView }) => {
     const map = useMap();
 
     useEffect(() => {
-        if (interactive) {
+        if (interactive && !lockView) {
             map.dragging.enable();
             map.touchZoom.enable();
             map.doubleClickZoom.enable();
@@ -46,10 +46,14 @@ const MapInteractionHandler = ({ interactive }) => {
             map.keyboard.disable();
             if (map.tap) map.tap.disable();
 
-            // Reset view
-            map.setView([6.12, 100.37], 9);
+            // Reset view only if not locked (or maybe we want to enforce center?)
+            // If locked, we usually want it fixed at center. 
+            // Let's keep the reset behavior or ensure it stays at center props.
+            if (!interactive) {
+                map.setView([6.12, 100.37], 9);
+            }
         }
-    }, [interactive, map]);
+    }, [interactive, lockView, map]);
 
     return null;
 }
@@ -69,7 +73,7 @@ const DISTRICT_COLORS = {
     'Yan': '#00BCD4'            // Cyan
 };
 
-const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true, onDistrictSelect }) => {
+const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true, onDistrictSelect, lockView = false }) => {
     const [spotlight, setSpotlight] = useState(null);
 
     // Sync spotlight with external prop if provided (optional, for bidirectional control)
@@ -273,7 +277,7 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                 touchZoom={false}
                 attributionControl={false}
             >
-                <MapInteractionHandler interactive={interactive} />
+                <MapInteractionHandler interactive={interactive} lockView={lockView} />
                 <GeoJSON
                     key={`${politicsMode}-layer`}
                     data={geoJsonData}
