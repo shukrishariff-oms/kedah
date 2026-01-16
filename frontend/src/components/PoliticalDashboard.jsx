@@ -1,93 +1,120 @@
-import { User, Award, CheckCircle2, Star } from 'lucide-react';
+import { User, Award, CheckCircle2, Star, MapPin } from 'lucide-react';
 
 const PoliticalDashboard = ({ politicalData, politicsMode }) => {
-    // Group data by status if needed, or just list them premium style
+
+    // Helper to determine styling based on party
+    const getPartyStyle = (party) => {
+        if (!party) return { color: 'text-slate-500', bg: 'bg-slate-100', border: 'border-slate-200', glow: 'from-slate-400 to-slate-300' };
+
+        const p = party.toUpperCase();
+        if (p.includes('PAS')) return { color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200', glow: 'from-green-500 to-emerald-400' };
+        if (p.includes('PH') || p.includes('PKR') || p.includes('DAP') || p.includes('AMANAH')) return { color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200', glow: 'from-red-500 to-rose-400' };
+        if (p.includes('BN') || p.includes('UMNO')) return { color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200', glow: 'from-blue-600 to-indigo-500' };
+        if (p.includes('PN') || p.includes('BERSATU') || p.includes('GERAKAN')) return { color: 'text-sky-600', bg: 'bg-sky-50', border: 'border-sky-200', glow: 'from-sky-500 to-cyan-400' };
+
+        return { color: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200', glow: 'from-slate-400 to-slate-300' };
+    };
 
     return (
-        <div className="w-full min-h-[500px] animate-fade-in relative z-10">
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-kedah-yellow/10 rounded-full blur-3xl -z-10"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-kedah-green/5 rounded-full blur-3xl -z-10"></div>
+        <div className="w-full min-h-[500px] animate-fade-in relative z-10 py-10">
 
-            {/* Header */}
-            <div className="text-center mb-10">
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-kedah-gold/20 to-transparent px-4 py-1.5 rounded-full border border-kedah-gold/30 mb-3 shadow-sm">
-                    <Star size={14} className="text-kedah-yellow fill-kedah-yellow" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-kedah-yellow">Dewan & Kepimpinan</span>
-                </div>
-                <h2 className="text-3xl lg:text-5xl font-black text-slate-800 tracking-tighter mb-2">
+            {/* Header Section */}
+            <div className="text-center mb-16 relative">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-kedah-yellow/20 rounded-full blur-3xl -z-10"></div>
+
+                <span className="inline-block py-1 px-3 rounded-full bg-white/50 backdrop-blur-sm border border-slate-200 text-[10px] font-black tracking-widest uppercase text-slate-500 mb-4 shadow-sm">
+                    Kepimpinan Negeri
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-3">
                     {politicsMode === 'parlimen' ? 'Ahli Parlimen' : 'Ahli Dewan Undangan Negeri'}
                 </h2>
-                <p className="text-slate-500 font-medium italic">Senarai kepimpinan negeri Kedah Darul Aman</p>
+                <div className="w-20 h-1.5 bg-gradient-to-r from-kedah-gold to-kedah-green rounded-full mx-auto"></div>
             </div>
 
             {/* Grid Layout */}
             {politicalData.length === 0 ? (
-                <div className="flex flex-col items-center justify-center p-20 glass rounded-3xl border-dashed border-2 border-slate-200 text-slate-400">
-                    <User size={48} className="mb-4 opacity-20" />
+                <div className="flex flex-col items-center justify-center p-20 glass rounded-3xl border border-white/50 text-slate-400 text-center">
+                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <User size={32} className="opacity-40" />
+                    </div>
                     <p className="font-bold tracking-widest uppercase text-xs">Tiada Data Ditemui</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {politicalData.map((poly) => (
-                        <div
-                            key={poly.id}
-                            className="group relative bg-white/60 backdrop-blur-md rounded-3xl p-1 shadow-glass border border-white/40 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl hover:bg-white/80"
-                        >
-                            {/* Card Content Wrapper */}
-                            <div className="relative h-full bg-gradient-to-br from-white to-slate-50 rounded-[22px] p-6 overflow-hidden border border-slate-100 flex flex-col items-center text-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 md:px-0">
+                    {politicalData.map((poly) => {
+                        const style = getPartyStyle(politicsMode === 'parlimen' ? poly.mp_party : poly.adun_party);
+                        const roleName = politicsMode === 'parlimen' ? poly.mp_name : poly.adun_name;
+                        const roleParty = politicsMode === 'parlimen' ? poly.mp_party : poly.adun_party;
+                        const region = poly.name;
+                        const code = poly.code;
+                        const photo = politicsMode === 'parlimen' ? poly.mp_photo_url : poly.adun_photo_url;
 
-                                {/* Decorative Badge/Code */}
-                                <div className="absolute top-4 right-4 bg-slate-900 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg z-10">
-                                    {poly.code}
-                                </div>
-
-                                {/* Avatar / Photo */}
-                                <div className="relative w-28 h-28 mb-4">
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-kedah-gold to-kedah-green rounded-full opacity-0 group-hover:opacity-20 animate-pulse transition-opacity duration-700 blur-xl"></div>
-                                    <div className="w-full h-full rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-200 flex items-center justify-center relative z-10">
-                                        {poly.mp_photo_url || poly.adun_photo_url ? (
-                                            <img
-                                                src={poly.mp_photo_url || poly.adun_photo_url}
-                                                alt={poly.mp_name || poly.adun_name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <User size={40} className="text-slate-400" />
-                                        )}
-                                    </div>
-                                    {/* Verification Tick */}
-                                    <div className="absolute bottom-0 right-0 bg-blue-500 text-white p-1 rounded-full border-2 border-white shadow-md z-20">
-                                        <CheckCircle2 size={12} strokeWidth={4} />
+                        return (
+                            <div
+                                key={poly.id || code}
+                                className="group relative bg-white/70 backdrop-blur-xl rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-white/60 hover:-translate-y-2 transition-all duration-500 ease-out hover:shadow-2xl hover:bg-white/90"
+                            >
+                                {/* Top Badge - Code */}
+                                <div className="absolute top-0 right-0 p-5 z-20">
+                                    <div className="bg-slate-900 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg tracking-wider">
+                                        {code}
                                     </div>
                                 </div>
 
-                                {/* Name & Title */}
-                                <div className="mb-4">
-                                    <h3 className="text-lg font-black text-slate-800 leading-tight mb-1 group-hover:text-kedah-green transition-colors">
-                                        {politicsMode === 'parlimen' ? poly.mp_name : poly.adun_name}
-                                    </h3>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
-                                        {poly.name}
-                                    </p>
+                                <div className="relative flex flex-col items-center pt-8 pb-6">
 
-                                    {/* Party Tag */}
-                                    <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-slate-100 rounded-lg border border-slate-200">
-                                        <Award size={12} className={
-                                            (poly.mp_party || poly.adun_party)?.includes('PAS') ? 'text-green-600' :
-                                                (poly.mp_party || poly.adun_party)?.includes('PH') ? 'text-red-600' : 'text-blue-600'
-                                        } />
-                                        <span className="text-[10px] font-black text-slate-600 uppercase">
-                                            {politicsMode === 'parlimen' ? poly.mp_party : poly.adun_party}
-                                        </span>
+                                    {/* Avatar with Glow Ring */}
+                                    <div className="relative mb-6">
+                                        {/* Dynamic Glow */}
+                                        <div className={`absolute -inset-1 bg-gradient-to-tr ${style.glow} rounded-full opacity-40 blur-md group-hover:opacity-75 transition-opacity duration-500`}></div>
+
+                                        <div className="relative w-28 h-28 rounded-full border-[4px] border-white shadow-lg overflow-hidden bg-slate-100 object-top">
+                                            {photo ? (
+                                                <img
+                                                    src={photo}
+                                                    alt={roleName}
+                                                    className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-700 ease-in-out"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                    <User size={48} />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Checkmark Badge */}
+                                        <div className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow-sm z-10">
+                                            <div className="bg-blue-500 rounded-full p-0.5">
+                                                <CheckCircle2 size={10} className="text-white" strokeWidth={3} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Content Info */}
+                                    <div className="text-center w-full px-2">
+                                        {/* Name */}
+                                        <h3 className="text-lg font-black text-slate-800 leading-tight mb-2 line-clamp-2 h-12 flex items-center justify-center group-hover:text-black transition-colors">
+                                            {roleName}
+                                        </h3>
+
+                                        {/* Region Name */}
+                                        <div className="flex items-center justify-center space-x-1.5 mb-4 text-slate-500">
+                                            <MapPin size={12} className="text-kedah-gold" />
+                                            <span className="text-[11px] font-bold uppercase tracking-widest">{region}</span>
+                                        </div>
+
+                                        {/* Party Pill */}
+                                        <div className={`inline-flex items-center space-x-2 px-4 py-1.5 rounded-xl border ${style.bg} ${style.border} transition-all duration-300 group-hover:shadow-sm`}>
+                                            <Award size={14} className={style.color} />
+                                            <span className={`text-[11px] font-black uppercase ${style.color}`}>
+                                                {roleParty}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Footer Decoration */}
-                                <div className="w-full h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full mt-auto"></div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>
