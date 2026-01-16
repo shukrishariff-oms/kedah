@@ -1,6 +1,6 @@
 import { User, Award, CheckCircle2, MapPin } from 'lucide-react';
 
-const PoliticalDashboard = ({ politicalData, politicsMode, selectedDistrict, districts }) => {
+const PoliticalDashboard = ({ politicalData = [], politicsMode, selectedDistrict, districts = [] }) => {
 
     // Helper to determine styling based on party
     const getPartyStyle = (party) => {

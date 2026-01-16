@@ -24,17 +24,17 @@ export default function Home() {
             try {
                 // Always fetch districts first for the dropdown & map polygons
                 const dRes = await getDistricts();
-                setDistricts(dRes.data);
+                setDistricts(dRes.data || []);
 
                 if (selectedExperience === 'Politik') {
                     // Fetch Political Data
                     let pData = [];
                     if (politicsMode === 'parlimen') {
                         const res = await getParliaments();
-                        pData = res.data;
+                        pData = res.data || [];
                     } else {
                         const res = await getDUNs();
-                        pData = res.data;
+                        pData = res.data || [];
                     }
                     setPoliticalData(pData);
                     setPlaces([]); // Clear normal places
@@ -46,7 +46,7 @@ export default function Home() {
                         district: selectedDistrict,
                     });
 
-                    let filteredPlaces = pRes.data;
+                    let filteredPlaces = pRes.data || [];
                     if (selectedExperience !== 'Semua') {
                         filteredPlaces = filteredPlaces.filter(p =>
                             p.categories.some(cat => cat.toLowerCase().includes(selectedExperience.toLowerCase())) ||
