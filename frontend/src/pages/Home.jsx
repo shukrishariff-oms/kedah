@@ -131,17 +131,15 @@ export default function Home() {
                     {/* Conditionally render Map or Political Dashboard */}
                     {selectedExperience === 'Politik' ? (
                         <div className="space-y-10">
-                            <div className="rounded-3xl overflow-hidden shadow-2xl border-8 border-white/50 bg-white ring-1 ring-slate-100">
-                                <Map
-                                    markers={places}
-                                    politicalData={politicalData}
-                                    politicsMode={politicsMode}
-                                    districts={districts}
-                                    interactive={true}
-                                    onDistrictSelect={setSelectedDistrict}
-                                    lockView={true}
-                                />
-                            </div>
+                            <Map
+                                markers={places}
+                                politicalData={politicalData}
+                                politicsMode={politicsMode}
+                                districts={districts}
+                                interactive={true}
+                                onDistrictSelect={setSelectedDistrict}
+                                lockView={true}
+                            />
                             <PoliticalDashboard
                                 politicalData={politicalData}
                                 politicsMode={politicsMode}

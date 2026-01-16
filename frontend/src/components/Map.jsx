@@ -264,12 +264,12 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
     };
 
     return (
-        <div className={`relative h-[500px] w-full overflow-hidden group/map transition-all ${interactive ? 'rounded-3xl border-8 border-white bg-kedah-gold shadow-2xl' : ''}`}>
+        <div className="relative h-[520px] w-full overflow-hidden group/map transition-all">
             <MapContainer
                 center={center}
                 zoom={zoom}
                 className="h-full w-full"
-                style={{ background: interactive ? '#FFD700' : 'transparent' }}
+                style={{ background: 'transparent' }}
                 scrollWheelZoom={false}
                 zoomControl={interactive} // Initial state
                 dragging={false} // Initial state
