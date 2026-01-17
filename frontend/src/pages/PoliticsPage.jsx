@@ -7,6 +7,11 @@ import RepresentativeDetail from '../components/RepresentativeDetail'
 import { Map as MapIcon } from 'lucide-react'
 
 export default function PoliticsPage() {
+    const [districts, setDistricts] = useState([])
+    const [politicalData, setPoliticalData] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [selectedDistrict, setSelectedDistrict] = useState('')
+    const [politicsMode, setPoliticsMode] = useState('parlimen') // 'parlimen' or 'dun'
     const [fetchError, setFetchError] = useState(null)
 
     useEffect(() => {
