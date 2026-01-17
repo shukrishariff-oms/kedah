@@ -7,15 +7,12 @@ import RepresentativeDetail from '../components/RepresentativeDetail'
 import { Map as MapIcon } from 'lucide-react'
 
 export default function PoliticsPage() {
-    const [districts, setDistricts] = useState([])
-    const [politicalData, setPoliticalData] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [selectedDistrict, setSelectedDistrict] = useState('')
-    const [politicsMode, setPoliticsMode] = useState('parlimen') // 'parlimen' or 'dun'
+    const [fetchError, setFetchError] = useState(null)
 
     useEffect(() => {
         async function fetchData() {
             setLoading(true)
+            setFetchError(null)
             try {
                 // Fetch Districts
                 const dRes = await getDistricts();
@@ -30,15 +27,17 @@ export default function PoliticsPage() {
                     const res = await getDUNs();
                     pData = res.data || [];
                 }
+                console.log("Fetched Data:", pData); // Debug log
                 setPoliticalData(pData);
             } catch (err) {
                 console.error(err);
+                setFetchError(err.message || 'Error fetching data');
             } finally {
                 setLoading(false);
             }
         }
         fetchData();
-    }, [politicsMode]); // Re-fetch when mode changes
+    }, [politicsMode]);
 
     return (
         <div className="container mx-auto px-6 py-12 animate-fade-in">
@@ -50,6 +49,8 @@ export default function PoliticsPage() {
                     </h2>
                     <p className="text-slate-500 max-w-2xl leading-relaxed">
                         Kenali Ahli Parlimen dan ADUN kawasan anda.
+                        {fetchError && <span className="block text-red-500 font-bold mt-2">Error: {fetchError}</span>}
+                        <span className="block text-xs text-slate-400 mt-1">Debug: Loaded {politicalData.length} items</span>
                     </p>
                 </div>
 
