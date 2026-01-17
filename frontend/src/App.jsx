@@ -1,7 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import PlaceDetail from './pages/PlaceDetail'
-import AdminDashboard from './pages/AdminDashboard'
+import PoliticsPage from './pages/PoliticsPage'
 
 function App() {
     return (
@@ -22,6 +19,7 @@ function App() {
                         </div>
                         <ul className="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
                             <li><a href="/" className="hover:text-kedah-gold transition-colors duration-300">Utama</a></li>
+                            <li><a href="/politics" className="hover:text-kedah-gold transition-colors duration-300">Politik</a></li>
                             <li><a href="/admin" className="px-5 py-2.5 bg-kedah-gold text-kedah-green rounded-full shadow-premium hover:bg-white transition-all duration-300 transform hover:scale-105 active:scale-95">Dashboard</a></li>
                         </ul>
                     </div>
@@ -30,6 +28,7 @@ function App() {
                 <main className="min-h-[calc(100vh-160px)]">
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/politics" element={<PoliticsPage />} />
                         <Route path="/place/:slug" element={<PlaceDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
