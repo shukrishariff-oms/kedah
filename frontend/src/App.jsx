@@ -39,7 +39,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/politics" element={<PoliticsPage />} />
                         <Route path="/food" element={<FoodPage />} />
-                        <Route path="/hidden-gems" element={<TourismPage title="Permata Tersembunyi" category="Hidden Gem" description="Lokasi rahsia yang menakjubkan." />} />
+                        <Route path="/hidden-gems" element={<HiddenGemsPage />} />
                         <Route path="/history" element={<TourismPage title="Jejak Sejarah" category="History" description="Kenali warisan dan sejarah Kedah Tua." />} />
                         <Route path="/place/:slug" element={<PlaceDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
