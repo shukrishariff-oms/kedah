@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, Compass, Mountain, Trees, Binoculars, ArrowRight, Camera } from 'lucide-react'
+import { Map, Compass, Mountain, Trees, Search, ArrowRight, Camera, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import MapComponent from '../components/Map'
 import PlaceCard from '../components/PlaceCard'
@@ -84,7 +84,7 @@ export default function HiddenGemsPage() {
         { label: 'Santai', key: 'Santai', icon: <Camera size={18} /> },
         { label: 'Hiking', key: 'Hiking', icon: <Mountain size={18} /> },
         { label: 'Air', key: 'Waterfall', icon: <Compass size={18} /> }, // Waterfall/Lake/Beach fallback
-        { label: 'Extreme', key: 'Extreme', icon: <Binoculars size={18} /> }
+        { label: 'Extreme', key: 'Extreme', icon: <Zap size={18} /> }
     ];
 
     return (
@@ -153,8 +153,8 @@ export default function HiddenGemsPage() {
                                         key={level.label}
                                         onClick={() => setActiveLevel(level.key)}
                                         className={`flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeLevel === level.key
-                                                ? 'bg-emerald-600 text-white shadow-lg scale-105'
-                                                : 'bg-slate-50 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
+                                            ? 'bg-emerald-600 text-white shadow-lg scale-105'
+                                            : 'bg-slate-50 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
                                             }`}
                                     >
                                         {level.icon}
@@ -171,7 +171,7 @@ export default function HiddenGemsPage() {
                         <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 mb-8 sticky top-24 z-30">
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <Binoculars className="h-5 w-5 text-slate-400" />
+                                    <Search className="h-5 w-5 text-slate-400" />
                                 </div>
                                 <input
                                     type="text"
