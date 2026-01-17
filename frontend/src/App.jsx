@@ -1,4 +1,9 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import PlaceDetail from './pages/PlaceDetail'
+import AdminDashboard from './pages/AdminDashboard'
 import PoliticsPage from './pages/PoliticsPage'
+import TourismPage from './pages/TourismPage'
 
 function App() {
     return (
@@ -17,8 +22,11 @@ function App() {
                                 <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] font-bold">Official Tourism Map</p>
                             </div>
                         </div>
-                        <ul className="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
+                        <ul className="hidden md:flex space-x-6 text-[10px] font-bold uppercase tracking-widest">
                             <li><a href="/" className="hover:text-kedah-gold transition-colors duration-300">Utama</a></li>
+                            <li><a href="/food" className="hover:text-kedah-gold transition-colors duration-300">Makan</a></li>
+                            <li><a href="/hidden-gems" className="hover:text-kedah-gold transition-colors duration-300">Hidden Gems</a></li>
+                            <li><a href="/history" className="hover:text-kedah-gold transition-colors duration-300">Sejarah</a></li>
                             <li><a href="/politics" className="hover:text-kedah-gold transition-colors duration-300">Politik</a></li>
                             <li><a href="/admin" className="px-5 py-2.5 bg-kedah-gold text-kedah-green rounded-full shadow-premium hover:bg-white transition-all duration-300 transform hover:scale-105 active:scale-95">Dashboard</a></li>
                         </ul>
@@ -29,6 +37,9 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/politics" element={<PoliticsPage />} />
+                        <Route path="/food" element={<TourismPage title="Syurga Makanan" category="Food" description="Jalan-jalan cari makan di spot terbaik Kedah." />} />
+                        <Route path="/hidden-gems" element={<TourismPage title="Permata Tersembunyi" category="Hidden Gem" description="Lokasi rahsia yang menakjubkan." />} />
+                        <Route path="/history" element={<TourismPage title="Jejak Sejarah" category="History" description="Kenali warisan dan sejarah Kedah Tua." />} />
                         <Route path="/place/:slug" element={<PlaceDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>

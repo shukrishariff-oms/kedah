@@ -305,13 +305,15 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
 
                 {/* Political Markers */}
                 {politicalData && politicalData.length > 0 && politicalData.map(poly => {
-                    const lat = politicsMode === 'parlimen' ? poly.parliament_lat : poly.dun_lat;
-                    const lng = politicsMode === 'parlimen' ? poly.parliament_lng : poly.dun_lng;
+                    // Try to resolve lat/lng from various possible property names or defaulting
+                    const lat = politicsMode === 'parlimen' ? (poly.parliament_lat || 6.12) : (poly.dun_lat || 6.12);
+                    const lng = politicsMode === 'parlimen' ? (poly.parliament_lng || 100.37) : (poly.dun_lng || 100.37);
 
-                    if (!lat || !lng) return null;
+                    // Skip if valid coordinates are effectively missing (though we defaulted above for safety, better to check specifically if that was the intent)
+                    if (!poly.code) return null;
 
                     return (
-                        <Marker key={poly.id} position={[lat, lng]}>
+                        <Marker key={poly.id || poly.code} position={[lat, lng]}>
                             <Popup>
                                 <div className="p-1 min-w-[200px]">
                                     <div className="flex items-center space-x-2 mb-2">

@@ -96,6 +96,7 @@ export default function PoliticsPage() {
                             politicalData={politicalData}
                             politicsMode={politicsMode}
                             districts={districts}
+                            center={[6.12, 100.37]}
                             interactive={true}
                             onDistrictSelect={setSelectedDistrict}
                             lockView={true}
