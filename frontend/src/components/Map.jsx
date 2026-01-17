@@ -163,11 +163,8 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                         setSpotlight(districtData || { name: name });
 
                         if (onDistrictSelect) {
-                            if (districtData) {
-                                onDistrictSelect(districtData.slug);
-                            } else {
-                                onDistrictSelect(null); // Or warn
-                            }
+                            const slug = districtData ? districtData.slug : name.toLowerCase().replace(/\s+/g, '-');
+                            onDistrictSelect(slug);
                         }
                     }
                 });

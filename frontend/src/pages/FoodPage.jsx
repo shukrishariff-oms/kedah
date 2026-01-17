@@ -20,6 +20,18 @@ export default function FoodPage() {
         { id: 'f4', title: 'Kuih Tradisional', image: 'https://images.unsplash.com/photo-1601362758113-1f7c568972e3?q=80&w=800', desc: 'Pemanis mulut asli.' },
     ]
 
+    // Mock Data Fallback (in case backend seed is pending)
+    const mockPlaces = [
+        { id: 101, name: 'Cafe Jerami', district_name: 'Yan', categories: ['Food', 'Sawah', 'Cafe'], lat: 5.81, lng: 100.38, description: 'Cafe tenang di tengah sawah padi dengan pemandangan Gunung Jerai.', slug: 'cafe-jerami', photos: [{ image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=400' }] },
+        { id: 102, name: 'Nasi Kandar Yasmeen', district_name: 'Kota Setar', categories: ['Food', 'Warung', 'Legend'], lat: 6.12, lng: 100.37, description: 'Legend nasi kandar Alor Setar. Kuah pekat likat.', slug: 'nasi-kandar-yasmeen', photos: [{ image: 'https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=400' }] },
+        { id: 103, name: 'Caffe Diem', district_name: 'Kota Setar', categories: ['Food', 'Cafe', 'Hipster'], lat: 6.11, lng: 100.36, description: 'Cafe hipster di bangunan bersejarah Pekan Cina.', slug: 'caffe-diem', photos: [{ image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=400' }] },
+        { id: 104, name: 'Laksa Ikan Sekoq', district_name: 'Langkawi', categories: ['Food', 'Warung', 'Seafood'], lat: 6.34, lng: 99.73, description: 'Makan laksa tepi airport sambil tengok kapal terbang mendarat.', slug: 'laksa-ikan-sekoq', photos: [{ image: 'https://images.unsplash.com/photo-1555126634-323283e090fa?q=80&w=400' }] },
+        { id: 105, name: 'Ikan Bakar Top', district_name: 'Kuala Muda', categories: ['Food', 'Seafood', 'Dinner'], lat: 5.64, lng: 100.49, description: 'Ikan bakar fresh dari jeti. Sambal padu.', slug: 'ikan-bakar-top', photos: [{ image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=400' }] },
+        { id: 106, name: 'Rumah Kopi', district_name: 'Kubang Pasu', categories: ['Food', 'Cafe', 'Sawah'], lat: 6.31, lng: 100.41, description: 'Kopi kampung original dalam suasana desa.', slug: 'rumah-kopi', photos: [{ image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=400' }] },
+        { id: 107, name: 'Hameediyah Bistro', district_name: 'Kota Setar', categories: ['Food', 'Legend', 'Warung'], lat: 6.13, lng: 100.38, description: 'Cawangan nasi kandar paling tua di Malaysia.', slug: 'hameediyah-bistro', photos: [{ image: 'https://images.unsplash.com/photo-1606850965373-10d93198cd5d?q=80&w=400' }] },
+        { id: 108, name: 'Sunset Grill', district_name: 'Langkawi', categories: ['Food', 'Hipster', 'Seafood'], lat: 6.36, lng: 99.6, description: 'Makan malam romantik menghadap matahari terbenam.', slug: 'sunset-grill', photos: [{ image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=400' }] }
+    ]
+
     const exploreRef = useRef(null)
 
     useEffect(() => {
@@ -38,13 +50,50 @@ export default function FoodPage() {
 
                 // Filter strictly for food related categories
                 let filtered = pRes.data || [];
-                filtered = filtered.filter(p =>
-                    p.categories.some(c => ['food', 'makan', 'cafe', 'restaurant', 'warung'].includes(c.toLowerCase()))
-                );
+
+                // Use Mock if empty
+                if (filtered.length === 0 && !search && !selectedDistrict) {
+                    filtered = mockPlaces;
+                }
+
+                // Apply Search locally if using mock
+                if (filtered === mockPlaces && (search || selectedDistrict)) {
+                    filtered = mockPlaces.filter(p => {
+                        const matchSearch = search ?
+                            (p.name.toLowerCase().includes(search.toLowerCase()) ||
+                                p.categories.some(c => c.toLowerCase().includes(search.toLowerCase())) ||
+                                p.description.toLowerCase().includes(search.toLowerCase()))
+                            : true;
+                        const matchDistrict = selectedDistrict ?
+                            p.district_name.toLowerCase().replace(' ', '-') === selectedDistrict.toLowerCase()
+                            : true;
+                        return matchSearch && matchDistrict;
+                    });
+                } else if (filtered !== mockPlaces) {
+                    filtered = filtered.filter(p =>
+                        p.categories.some(c => ['food', 'makan', 'cafe', 'restaurant', 'warung', 'sawah', 'hipster', 'seafood', 'legend'].includes(c.toLowerCase()))
+                    );
+                }
 
                 setPlaces(filtered);
             } catch (err) {
                 console.error(err);
+                // Apply filters to Mock Data on error
+                let filteredMock = mockPlaces;
+                if (search || selectedDistrict) {
+                    filteredMock = mockPlaces.filter(p => {
+                        const matchSearch = search ?
+                            (p.name.toLowerCase().includes(search.toLowerCase()) ||
+                                p.categories.some(c => c.toLowerCase().includes(search.toLowerCase())) ||
+                                p.description.toLowerCase().includes(search.toLowerCase()))
+                            : true;
+                        const matchDistrict = selectedDistrict ?
+                            p.district_name.toLowerCase().replace(' ', '-') === selectedDistrict.toLowerCase()
+                            : true;
+                        return matchSearch && matchDistrict;
+                    });
+                }
+                setPlaces(filteredMock);
             } finally {
                 setLoading(false);
             }
