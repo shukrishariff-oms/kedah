@@ -4,6 +4,7 @@ import PlaceDetail from './pages/PlaceDetail'
 import AdminDashboard from './pages/AdminDashboard'
 import PoliticsPage from './pages/PoliticsPage'
 import TourismPage from './pages/TourismPage'
+import FoodPage from './pages/FoodPage'
 
 function App() {
     return (
@@ -37,7 +38,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/politics" element={<PoliticsPage />} />
-                        <Route path="/food" element={<TourismPage title="Syurga Makanan" category="Food" description="Jalan-jalan cari makan di spot terbaik Kedah." />} />
+                        <Route path="/food" element={<FoodPage />} />
                         <Route path="/hidden-gems" element={<TourismPage title="Permata Tersembunyi" category="Hidden Gem" description="Lokasi rahsia yang menakjubkan." />} />
                         <Route path="/history" element={<TourismPage title="Jejak Sejarah" category="History" description="Kenali warisan dan sejarah Kedah Tua." />} />
                         <Route path="/place/:slug" element={<PlaceDetail />} />
