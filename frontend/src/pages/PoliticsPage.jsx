@@ -54,8 +54,10 @@ export default function PoliticsPage() {
                     </h2>
                     <p className="text-slate-500 max-w-2xl leading-relaxed">
                         Kenali Ahli Parlimen dan ADUN kawasan anda.
+                        Kenali Ahli Parlimen dan ADUN kawasan anda.
                         {fetchError && <span className="block text-red-500 font-bold mt-2">Error: {fetchError}</span>}
                         <span className="block text-xs text-slate-400 mt-1">Debug: Loaded {politicalData.length} items</span>
+                        <span className="block text-xs text-slate-400">Target API: {import.meta.env.VITE_API_URL || '/api'}</span>
                     </p>
                 </div>
 
