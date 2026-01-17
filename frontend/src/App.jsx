@@ -20,7 +20,7 @@ function App() {
                                 <h1 className="text-2xl font-black uppercase tracking-tighter">
                                     Info <span className="text-kedah-gold">Kedah</span>
                                 </h1>
-                                <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] font-bold">Official Tourism Map</p>
+                                <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] font-bold">Powered by Ohmaishoot!</p>
                             </div>
                         </div>
                         <ul className="hidden md:flex space-x-6 text-[10px] font-bold uppercase tracking-widest">

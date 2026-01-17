@@ -3,7 +3,7 @@ import { getPlaces } from '../api/places'
 import { getDistricts } from '../api/districts'
 import Map from '../components/Map'
 import PlaceCard from '../components/PlaceCard'
-import { Utensils, MapPin, Coffee, ArrowRight, Search, Map as MapIcon, X } from 'lucide-react'
+import { Utensils, MapPin, Coffee, ArrowRight, Search, Map as MapIcon, X, Sun, Zap, Fish } from 'lucide-react'
 
 export default function FoodPage() {
     const [places, setPlaces] = useState([])
@@ -97,6 +97,38 @@ export default function FoodPage() {
                             <h3 className="text-slate-800 font-black uppercase text-sm tracking-tight">{dish.title}</h3>
                             <p className="text-xs text-slate-500">{dish.desc}</p>
                         </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* 2.5 Dining Vibes (Inspired by VisitSingapore) */}
+            <div className="container mx-auto px-6 mb-16">
+                <div className="text-center mb-8">
+                    <span className="text-orange-500 font-bold tracking-widest text-xs uppercase mb-2 block animate-pulse">Pilih Mood Anda</span>
+                    <h2 className="text-3xl font-black text-slate-800 uppercase tracking-tighter">
+                        Suasana <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Pilihan</span>
+                    </h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                        { label: 'Santai Sawah', icon: <Sun size={24} />, key: 'Sawah', img: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=400', desc: 'Tenang & Hijau' },
+                        { label: 'Port Hipster', icon: <Zap size={24} />, key: 'Cafe', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=400', desc: 'OOTD & Kopi' },
+                        { label: 'Warung Legend', icon: <Utensils size={24} />, key: 'Warung', img: 'https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=400', desc: 'Rasa Asli' },
+                        { label: 'Seafood Fresh', icon: <Fish size={24} />, key: 'Seafood', img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=400', desc: 'Tepi Laut' }
+                    ].map((vibe) => (
+                        <button
+                            key={vibe.key}
+                            onClick={() => { setSearch(vibe.key); scrollToExplore(); }}
+                            className="relative h-40 rounded-3xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-all hover:-translate-y-1 block text-left w-full border border-slate-100"
+                        >
+                            <div className="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition-colors z-10"></div>
+                            <img src={vibe.img} className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt={vibe.label} />
+                            <div className="absolute bottom-0 left-0 p-4 z-20 w-full bg-gradient-to-t from-black/80 to-transparent">
+                                <div className="text-orange-300 mb-1 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">{vibe.icon}</div>
+                                <h3 className="text-white font-black uppercase tracking-tight text-lg leading-none">{vibe.label}</h3>
+                                <p className="text-slate-300 text-[10px] font-bold mt-1">{vibe.desc}</p>
+                            </div>
+                        </button>
                     ))}
                 </div>
             </div>
