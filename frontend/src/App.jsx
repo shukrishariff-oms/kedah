@@ -5,6 +5,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import PoliticsPage from './pages/PoliticsPage'
 import TourismPage from './pages/TourismPage'
 import FoodPage from './pages/FoodPage'
+import HiddenGemsPage from './pages/HiddenGemsPage'
 
 function App() {
     return (
