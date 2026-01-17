@@ -16,7 +16,8 @@ const PoliticalDashboard = ({ politicalData = [], politicsMode, selectedDistrict
     };
 
     // Filter Data Logic
-    const districtName = districts?.find(d => d.slug === selectedDistrict)?.name;
+    const foundDistrict = districts?.find(d => d.slug === selectedDistrict);
+    const districtName = foundDistrict?.name || (selectedDistrict ? selectedDistrict.replace(/-/g, ' ').toUpperCase() : '');
 
     // Filter data based on selected district if available
     // Note: In a real app we would filter by district_id. 
