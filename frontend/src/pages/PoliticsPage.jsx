@@ -12,7 +12,6 @@ export default function PoliticsPage() {
     const [loading, setLoading] = useState(true)
     const [selectedDistrict, setSelectedDistrict] = useState('')
     const [politicsMode, setPoliticsMode] = useState('parlimen') // 'parlimen' or 'dun'
-    const [fetchError, setFetchError] = useState(null)
 
     useEffect(() => {
         async function fetchData() {
@@ -32,11 +31,9 @@ export default function PoliticsPage() {
                     const res = await getDUNs();
                     pData = res.data || [];
                 }
-                console.log("Fetched Data:", pData); // Debug log
                 setPoliticalData(pData);
             } catch (err) {
                 console.error(err);
-                setFetchError(err.message || 'Error fetching data');
             } finally {
                 setLoading(false);
             }
@@ -55,9 +52,6 @@ export default function PoliticsPage() {
                     <p className="text-slate-500 max-w-2xl leading-relaxed">
                         Kenali Ahli Parlimen dan ADUN kawasan anda.
                         Kenali Ahli Parlimen dan ADUN kawasan anda.
-                        {fetchError && <span className="block text-red-500 font-bold mt-2">Error: {fetchError}</span>}
-                        <span className="block text-xs text-slate-400 mt-1">Debug: Loaded {politicalData.length} items</span>
-                        <span className="block text-xs text-slate-400">Target API: {import.meta.env.VITE_API_URL || '/api'}</span>
                     </p>
                 </div>
 
