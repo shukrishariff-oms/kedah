@@ -29,7 +29,7 @@ export default function PoliticsPage() {
     return (
         <div className="container mx-auto px-6 py-12">
             <h1 className="text-4xl font-black mb-8 text-center text-slate-800">
-                INFO <span className="text-yellow-500">POLITIK</span> (V2 Fresh)
+                INFO <span className="text-yellow-500">POLITIK</span>
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -68,9 +68,7 @@ export default function PoliticsPage() {
                 ))}
             </div>
 
-            <div className="mt-8 text-center text-xs text-slate-400">
-                Debug Mode: {parliaments.length} records loaded. API Target: {import.meta.env.VITE_API_URL || '/api'} (Forced /api via client.js)
-            </div>
+
         </div>
     );
 }
