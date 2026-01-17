@@ -1,121 +1,76 @@
-import { useState, useEffect } from 'react'
-import { getDistricts } from '../api/districts'
-import { getParliaments, getDUNs } from '../api/politics'
-import Map from '../components/Map'
-import PoliticalDashboard from '../components/PoliticalDashboard'
-import RepresentativeDetail from '../components/RepresentativeDetail'
-import { Map as MapIcon } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { getParliaments } from '../api/politics';
 
 export default function PoliticsPage() {
-    const [districts, setDistricts] = useState([])
-    const [politicalData, setPoliticalData] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [selectedDistrict, setSelectedDistrict] = useState('')
-    const [politicsMode, setPoliticsMode] = useState('parlimen') // 'parlimen' or 'dun'
+    const [parliaments, setParliaments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         async function fetchData() {
-            setLoading(true)
-            setFetchError(null)
+            setLoading(true);
             try {
-                // Fetch Districts
-                const dRes = await getDistricts();
-                setDistricts(dRes.data || []);
-
-                // Fetch Political Data based on mode
-                let pData = [];
-                if (politicsMode === 'parlimen') {
-                    const res = await getParliaments();
-                    pData = res.data || [];
-                } else {
-                    const res = await getDUNs();
-                    pData = res.data || [];
-                }
-                setPoliticalData(pData);
+                const res = await getParliaments();
+                console.log("API Success:", res.data);
+                setParliaments(res.data || []);
             } catch (err) {
-                console.error(err);
+                console.error("API Error:", err);
+                setError(err.message || 'Error fetching data');
             } finally {
                 setLoading(false);
             }
         }
         fetchData();
-    }, [politicsMode]);
+    }, []);
+
+    if (loading) return <div className="min-h-screen flex items-center justify-center text-2xl font-bold">Loading Politics Data...</div>;
+    if (error) return <div className="min-h-screen flex items-center justify-center text-red-500 font-bold">Error: {error}</div>;
 
     return (
-        <div className="container mx-auto px-6 py-12 animate-fade-in">
-            {/* Header */}
-            <div className="mb-12 text-center md:text-left flex flex-col md:flex-row justify-between items-end gap-6">
-                <div>
-                    <h2 className="text-4xl font-black text-kedah-green mb-2 leading-tight uppercase tracking-tighter">
-                        Info <span className="text-kedah-gold">Politik</span>
-                    </h2>
-                    <p className="text-slate-500 max-w-2xl leading-relaxed">
-                        Kenali Ahli Parlimen dan ADUN kawasan anda.
-                        Kenali Ahli Parlimen dan ADUN kawasan anda.
-                    </p>
-                </div>
+        <div className="container mx-auto px-6 py-12">
+            <h1 className="text-4xl font-black mb-8 text-center text-slate-800">
+                INFO <span className="text-yellow-500">POLITIK</span> (V2 Fresh)
+            </h1>
 
-                {/* Mode Toggle */}
-                <div className="flex gap-2 bg-white p-1.5 rounded-xl shadow-sm border border-slate-200">
-                    <button
-                        onClick={() => setPoliticsMode('parlimen')}
-                        className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${politicsMode === 'parlimen'
-                            ? 'bg-purple-600 text-white shadow-md'
-                            : 'bg-transparent text-slate-400 hover:bg-slate-50'
-                            }`}
-                    >
-                        Parlimen
-                    </button>
-                    <button
-                        onClick={() => setPoliticsMode('dun')}
-                        className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${politicsMode === 'dun'
-                            ? 'bg-purple-600 text-white shadow-md'
-                            : 'bg-transparent text-slate-400 hover:bg-slate-50'
-                            }`}
-                    >
-                        DUN
-                    </button>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {parliaments.map((p) => (
+                    <div key={p.id} className="bg-white rounded-xl shadow-lg p-6 border border-slate-100 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center gap-4 mb-4">
+                            <img
+                                src={p.mp_photo_url || `https://ui-avatars.com/api/?name=${p.mp_name}`}
+                                alt={p.mp_name}
+                                className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
+                            />
+                            <div>
+                                <span className="text-xs font-bold text-slate-400 uppercase">{p.code}</span>
+                                <h3 className="text-lg font-bold text-slate-800 leading-tight">{p.name}</h3>
+                                <p className="text-sm text-slate-600">{p.mp_name}</p>
+                                <span className="text-xs font-bold px-2 py-1 bg-slate-100 rounded text-slate-500 mt-1 inline-block">{p.mp_party}</span>
+                            </div>
+                        </div>
+
+                        {/* DUNs List */}
+                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                            <h4 className="text-xs font-black text-slate-400 uppercase mb-2">DUN Areas ({p.duns?.length})</h4>
+                            {p.duns?.map(d => (
+                                <div key={d.id} className="flex items-center gap-3 bg-slate-50 p-2 rounded-lg">
+                                    <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                        <img src={d.adun_photo_url} alt={d.adun_name} className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <p className="text-xs font-bold text-slate-700 truncate">{d.code} {d.name}</p>
+                                        <p className="text-[10px] text-slate-500 truncate">{d.adun_name} ({d.adun_party})</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            {/* Main Content (Split View) */}
-            <div className="space-y-4">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[500px]">
-                    {/* Left Column: Detailed View */}
-                    <div className="lg:col-span-4 h-full relative z-10">
-                        <RepresentativeDetail
-                            selectedDistrict={selectedDistrict}
-                            districts={districts}
-                            politicalData={politicalData}
-                            politicsMode={politicsMode}
-                        />
-                    </div>
-
-                    {/* Right Column: Map */}
-                    <div className="lg:col-span-8 h-full bg-slate-50/50 rounded-[3rem] p-4 lg:p-0">
-                        <Map
-                            markers={[]} // No tourism markers here
-                            politicalData={politicalData}
-                            politicsMode={politicsMode}
-                            districts={districts}
-                            center={[6.12, 100.37]}
-                            interactive={true}
-                            onDistrictSelect={setSelectedDistrict}
-                            lockView={true}
-                            className="h-full w-full"
-                        />
-                    </div>
-                </div>
-
-                {/* Bottom Carousel */}
-                <PoliticalDashboard
-                    politicalData={politicalData}
-                    politicsMode={politicsMode}
-                    selectedDistrict={selectedDistrict}
-                    districts={districts}
-                    onSelectDistrict={setSelectedDistrict}
-                />
+            <div className="mt-8 text-center text-xs text-slate-400">
+                Debug Mode: {parliaments.length} records loaded. API Target: {import.meta.env.VITE_API_URL || '/api'} (Forced /api via client.js)
             </div>
         </div>
-    )
+    );
 }
