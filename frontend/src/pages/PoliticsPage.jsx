@@ -34,8 +34,13 @@ export default function PoliticsPage() {
             </h1>
 
             {/* Map Section */}
-            <div className="mb-12">
-                <div className="h-[600px] relative">
+            <div className="mb-24 mt-8">
+                <div className="h-[750px] relative w-full flex flex-col justify-center">
+                    <div className="absolute top-4 left-4 z-[400]">
+                        <h3 className="font-black text-slate-800 text-3xl leading-tight uppercase tracking-tighter">Peta Parlimen</h3>
+                        <p className="text-sm text-slate-500 mt-1 font-medium">Klik kawasan untuk info.</p>
+                    </div>
+
                     <Map
                         politicalData={parliaments}
                         politicsMode="parlimen"
@@ -43,12 +48,8 @@ export default function PoliticsPage() {
                         interactive={true}
                         lockView={true}
                         zoom={9}
-                        center={[6.00, 100.50]} // Adjusted center for better view
+                        center={[5.90, 100.45]}
                     />
-                    <div className="absolute top-0 left-0 z-[400]">
-                        <h3 className="font-black text-slate-800 text-2xl leading-tight uppercase tracking-tighter">Peta Parlimen</h3>
-                        <p className="text-sm text-slate-500 mt-1">Klik kawasan untuk info.</p>
-                    </div>
                 </div>
             </div>
 
