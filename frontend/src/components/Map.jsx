@@ -371,52 +371,46 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
             {/* District/Parliament Spotlight Overlay */}
             {
                 spotlight && (
-                    <div className="absolute top-6 right-6 w-80 glass p-6 rounded-3xl shadow-glass border-white/40 z-[1000] animate-fade-in">
+                    <div className="absolute top-6 right-6 w-96 bg-white p-6 rounded-xl shadow-2xl border border-slate-100 z-[1000] animate-fade-in max-h-[600px] overflow-y-auto custom-scrollbar">
                         <button
                             onClick={() => setSpotlight(null)}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-kedah-red transition-colors"
+                            className="absolute top-4 right-4 text-slate-400 hover:text-kedah-red transition-colors z-10 bg-white rounded-full p-1"
                         >
-                            ✕
+                            <X size={20} />
                         </button>
 
                         {/* Parliament Info View */}
                         {spotlight.mp_name ? (
                             <div>
-                                <div className="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
-                                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-kedah-gold shadow-md bg-slate-200">
-                                        <img src={spotlight.mp_photo_url} className="w-full h-full object-cover" alt={spotlight.mp_name} />
-                                    </div>
+                                <div className="flex items-center gap-4 mb-4">
+                                    <img
+                                        src={spotlight.mp_photo_url || `https://ui-avatars.com/api/?name=${spotlight.mp_name}`}
+                                        alt={spotlight.mp_name}
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
+                                    />
                                     <div>
-                                        <span className="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-500 uppercase tracking-widest block w-fit mb-1">{spotlight.code}</span>
-                                        <h4 className="font-black text-slate-800 uppercase tracking-tight text-lg leading-none">{spotlight.name}</h4>
+                                        <span className="text-xs font-bold text-slate-400 uppercase">{spotlight.code}</span>
+                                        <h3 className="text-lg font-bold text-slate-800 leading-tight">{spotlight.name}</h3>
+                                        <p className="text-sm text-slate-600">{spotlight.mp_name}</p>
+                                        <span className="text-xs font-bold px-2 py-1 bg-slate-100 rounded text-slate-500 mt-1 inline-block">{spotlight.mp_party}</span>
                                     </div>
                                 </div>
 
-                                <div className="mb-4">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Ahli Parlimen</p>
-                                    <p className="text-base font-bold text-slate-800 leading-tight">{spotlight.mp_name}</p>
-                                    <div className="mt-1 flex items-center space-x-2">
-                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded text-white ${spotlight.mp_party?.includes('PAS') || spotlight.mp_party?.includes('PN') ? 'bg-green-600' : 'bg-blue-600'}`}>
-                                            {spotlight.mp_party}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {spotlight.duns && spotlight.duns.length > 0 && (
-                                    <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">DUN ({spotlight.duns.length})</p>
-                                        <div className="grid grid-cols-1 gap-1.5 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
-                                            {spotlight.duns.map((dun, idx) => (
-                                                <div key={idx} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
-                                                    <div>
-                                                        <p className="text-[11px] font-bold text-slate-800">{dun.code} {dun.name}</p>
-                                                        <p className="text-[9px] font-medium text-slate-400 leading-none">{dun.adun_name}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                {/* DUNs List */}
+                                <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                                    <h4 className="text-xs font-black text-slate-400 uppercase mb-2">DUN Areas ({spotlight.duns?.length})</h4>
+                                    {spotlight.duns?.map((d, idx) => (
+                                        <div key={idx} className="flex items-center gap-3 bg-slate-50 p-2 rounded-lg">
+                                            <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                                <img src={d.adun_photo_url} alt={d.adun_name} className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <p className="text-xs font-bold text-slate-700 truncate">{d.code} {d.name}</p>
+                                                <p className="text-[10px] text-slate-500 truncate">{d.adun_name} ({d.adun_party})</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    ))}
+                                </div>
                             </div>
                         ) : (
                             /* Standard District View (Fallback) */
