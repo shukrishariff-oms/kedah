@@ -35,7 +35,7 @@ export default function PoliticsPage() {
 
             {/* Map Section */}
             <div className="mb-12">
-                <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-white h-[600px] relative">
+                <div className="h-[600px] relative">
                     <Map
                         politicalData={parliaments}
                         politicsMode="parlimen"
@@ -44,9 +44,9 @@ export default function PoliticsPage() {
                         zoom={9}
                         center={[6.00, 100.50]} // Adjusted center for better view
                     />
-                    <div className="absolute top-6 left-6 z-[400] bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-slate-100 max-w-xs">
-                        <h3 className="font-black text-slate-800 text-lg leading-tight uppercase">Peta Parlimen</h3>
-                        <p className="text-xs text-slate-500 mt-1">Klik pada kawasan parlimen untuk melihat info wakil rakyat.</p>
+                    <div className="absolute top-0 left-0 z-[400]">
+                        <h3 className="font-black text-slate-800 text-2xl leading-tight uppercase tracking-tighter">Peta Parlimen</h3>
+                        <p className="text-sm text-slate-500 mt-1">Klik kawasan untuk info.</p>
                     </div>
                 </div>
             </div>
