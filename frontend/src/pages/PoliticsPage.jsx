@@ -34,7 +34,7 @@ export default function PoliticsPage() {
             </h1>
 
             {/* Map Section */}
-            <div className="mb-24 mt-8">
+            <div className="mb-2 mt-8">
                 <div className="h-[850px] relative w-full flex flex-col justify-center">
                     <div className="absolute top-4 left-4 z-[400]">
                         <h3 className="font-black text-slate-800 text-3xl leading-tight uppercase tracking-tighter">Peta Parlimen</h3>
