@@ -5,6 +5,7 @@ import kedahDistricts from '../data/kedah-districts.json';
 import kedahDUNs from '../data/kedah-duns.json';
 import kedahParliaments from '../data/kedah-parliaments.json';
 import { useEffect } from 'react';
+import { X } from 'lucide-react';
 
 // Fix for default marker icons in Leaflet with React
 // ... (keep inputs same)
