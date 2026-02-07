@@ -287,7 +287,7 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                 className="h-full w-full"
                 style={{ background: 'transparent' }}
                 scrollWheelZoom={false}
-                zoomControl={interactive} // Initial state
+                zoomControl={interactive && !lockView} // Initial state
                 dragging={false} // Initial state
                 doubleClickZoom={false}
                 touchZoom={false}

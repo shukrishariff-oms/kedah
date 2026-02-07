@@ -41,6 +41,7 @@ export default function PoliticsPage() {
                         politicsMode="parlimen"
                         variant="clean"
                         interactive={true}
+                        lockView={true}
                         zoom={9}
                         center={[6.00, 100.50]} // Adjusted center for better view
                     />
