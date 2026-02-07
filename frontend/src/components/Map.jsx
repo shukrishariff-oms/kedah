@@ -233,10 +233,15 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                         // Find matching parliament data from props
                         const pData = politicalData.find(p => p.code === code);
 
-                        // Set spotlight for persistent highlight
-                        setSpotlight({ name: name });
-
+                        // Set spotlight for persistent highlight and info display
                         if (pData) {
+                            setSpotlight(pData);
+                        } else {
+                            setSpotlight({ name: name });
+                        }
+
+                        // Only show Leaflet popup if NOT in clean mode (since we use the side box for clean mode)
+                        if (pData && variant !== 'clean') {
                             // Show popup with info
                             const popupContent = `
                                 <div class="p-4 min-w-[250px] font-sans">
@@ -324,8 +329,8 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                     </Marker>
                 ))}
 
-                {/* Political Markers */}
-                {politicalData && politicalData.length > 0 && politicalData.map(poly => {
+                {/* Political Markers - Hide in clean mode */}
+                {politicalData && politicalData.length > 0 && variant !== 'clean' && politicalData.map(poly => {
                     // Try to resolve lat/lng from various possible property names or defaulting
                     const lat = politicsMode === 'parlimen' ? (poly.parliament_lat || 6.12) : (poly.dun_lat || 6.12);
                     const lng = politicsMode === 'parlimen' ? (poly.parliament_lng || 100.37) : (poly.dun_lng || 100.37);
@@ -363,37 +368,69 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                 })}
             </MapContainer>
 
-            {/* District Spotlight Overlay */}
+            {/* District/Parliament Spotlight Overlay */}
             {
                 spotlight && (
-                    <div className="absolute top-6 right-6 w-72 glass p-6 rounded-3xl shadow-glass border-white/40 z-[1000] animate-fade-in">
+                    <div className="absolute top-6 right-6 w-80 glass p-6 rounded-3xl shadow-glass border-white/40 z-[1000] animate-fade-in">
                         <button
                             onClick={() => setSpotlight(null)}
                             className="absolute top-4 right-4 text-slate-400 hover:text-kedah-red transition-colors"
                         >
                             ✕
                         </button>
-                        <div className="flex items-center space-x-2 mb-3">
-                            <div className="w-6 h-6 rounded-full bg-kedah-green flex items-center justify-center text-[10px] text-white font-bold">
-                                K
-                            </div>
-                            <h4 className="font-black text-kedah-green uppercase tracking-tighter text-xl italic">{spotlight.name}</h4>
-                        </div>
-                        {/* Note: In a full implementation, we'd pass district data from Home.jsx */}
-                        <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                            {spotlight.description || `Peneraju keunikan dan warisan Kedah Darul Aman di daerah ${spotlight.name}.`}
-                        </p>
-                        {spotlight.specialties && spotlight.specialties.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Kepakaran Daerah</p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {spotlight.specialties.map(s => (
-                                        <span key={s} className="px-2 py-1 bg-white/50 text-[9px] font-bold text-kedah-green rounded-full shadow-sm">
-                                            {s}
-                                        </span>
-                                    ))}
+
+                        {/* Parliament Info View */}
+                        {spotlight.mp_name ? (
+                            <div>
+                                <div className="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
+                                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-kedah-gold shadow-md bg-slate-200">
+                                        <img src={spotlight.mp_photo_url} className="w-full h-full object-cover" alt={spotlight.mp_name} />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-500 uppercase tracking-widest block w-fit mb-1">{spotlight.code}</span>
+                                        <h4 className="font-black text-slate-800 uppercase tracking-tight text-lg leading-none">{spotlight.name}</h4>
+                                    </div>
                                 </div>
+
+                                <div className="mb-4">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Ahli Parlimen</p>
+                                    <p className="text-base font-bold text-slate-800 leading-tight">{spotlight.mp_name}</p>
+                                    <div className="mt-1 flex items-center space-x-2">
+                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded text-white ${spotlight.mp_party?.includes('PAS') || spotlight.mp_party?.includes('PN') ? 'bg-green-600' : 'bg-blue-600'}`}>
+                                            {spotlight.mp_party}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {spotlight.duns && spotlight.duns.length > 0 && (
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">DUN ({spotlight.duns.length})</p>
+                                        <div className="grid grid-cols-1 gap-1.5 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                                            {spotlight.duns.map((dun, idx) => (
+                                                <div key={idx} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                                    <div>
+                                                        <p className="text-[11px] font-bold text-slate-800">{dun.code} {dun.name}</p>
+                                                        <p className="text-[9px] font-medium text-slate-400 leading-none">{dun.adun_name}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
+                        ) : (
+                            /* Standard District View (Fallback) */
+                            <>
+                                <div className="flex items-center space-x-2 mb-3">
+                                    <div className="w-6 h-6 rounded-full bg-kedah-green flex items-center justify-center text-[10px] text-white font-bold">
+                                        K
+                                    </div>
+                                    <h4 className="font-black text-kedah-green uppercase tracking-tighter text-xl italic">{spotlight.name}</h4>
+                                </div>
+                                <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                                    {spotlight.description || `Peneraju keunikan dan warisan Kedah Darul Aman di daerah ${spotlight.name}.`}
+                                </p>
+                            </>
                         )}
                     </div>
                 )
