@@ -4,8 +4,7 @@ import L from 'leaflet';
 import kedahDistricts from '../data/kedah-districts.json';
 import kedahDUNs from '../data/kedah-duns.json';
 import kedahParliaments from '../data/kedah-parliaments.json';
-import { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 // Fix for default marker icons in Leaflet with React
 // ... (keep inputs same)
@@ -23,7 +22,23 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-import { useState } from 'react';
+const X = ({ size = 24, className }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+    >
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+    </svg>
+);
 
 // Component to handle dynamic interaction updates
 const MapInteractionHandler = ({ interactive, lockView }) => {
