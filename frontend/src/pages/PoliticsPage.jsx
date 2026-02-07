@@ -48,7 +48,7 @@ export default function PoliticsPage() {
                         interactive={true}
                         lockView={true}
                         zoom={8.8}
-                        center={[6.00, 100.4]}
+                        center={[5.75, 100.45]}
                     />
                 </div>
             </div>
