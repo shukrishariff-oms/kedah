@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getParliaments } from '../api/politics';
+import Map from '../components/Map';
 
 export default function PoliticsPage() {
     const [parliaments, setParliaments] = useState([]);
@@ -31,6 +32,24 @@ export default function PoliticsPage() {
             <h1 className="text-4xl font-black mb-8 text-center text-slate-800">
                 INFO <span className="text-yellow-500">POLITIK</span>
             </h1>
+
+            {/* Map Section */}
+            <div className="mb-12">
+                <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-white h-[600px] relative">
+                    <Map
+                        politicalData={parliaments}
+                        politicsMode="parlimen"
+                        variant="clean"
+                        interactive={true}
+                        zoom={9}
+                        center={[6.00, 100.50]} // Adjusted center for better view
+                    />
+                    <div className="absolute top-6 left-6 z-[400] bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-slate-100 max-w-xs">
+                        <h3 className="font-black text-slate-800 text-lg leading-tight uppercase">Peta Parlimen</h3>
+                        <p className="text-xs text-slate-500 mt-1">Klik pada kawasan parlimen untuk melihat info wakil rakyat.</p>
+                    </div>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {parliaments.map((p) => (

@@ -73,7 +73,7 @@ const DISTRICT_COLORS = {
     'Yan': '#00BCD4'            // Cyan
 };
 
-const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true, onDistrictSelect, lockView = false }) => {
+const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 'parlimen', center = [6.12, 100.37], zoom = 9, interactive = true, onDistrictSelect, lockView = false, variant = 'colorful' }) => {
     const [spotlight, setSpotlight] = useState(null);
 
     // Sync spotlight with external prop if provided (optional, for bidirectional control)
@@ -96,6 +96,17 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
         if (!isDunMode) {
             const name = feature.properties.name;
             const isSelected = spotlight && spotlight.name === name;
+
+            if (variant === 'clean') {
+                return {
+                    fillColor: isSelected ? '#ec4899' : '#f8fafc', // Pink if selected, White/Slate-50 if not
+                    weight: isSelected ? 2 : 1,
+                    opacity: 1,
+                    color: isSelected ? '#ec4899' : '#cbd5e1', // Pink border if selected, Slate-300 if not
+                    fillOpacity: isSelected ? 1 : 1
+                };
+            }
+
             return {
                 fillColor: DISTRICT_COLORS[name] || '#9e9e9e',
                 weight: isSelected ? 4 : 2,
@@ -149,13 +160,21 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                     mouseover: (e) => {
                         const layer = e.target;
                         if (!spotlight || spotlight.name !== name) {
-                            layer.setStyle({ fillOpacity: 0.9, weight: 3 });
+                            if (variant === 'clean') {
+                                layer.setStyle({ fillColor: '#fce7f3', color: '#ec4899', weight: 2 }); // Light pink hover
+                            } else {
+                                layer.setStyle({ fillOpacity: 0.9, weight: 3 });
+                            }
                         }
                     },
                     mouseout: (e) => {
                         const layer = e.target;
                         if (!spotlight || spotlight.name !== name) {
-                            layer.setStyle({ fillOpacity: 0.7, weight: 2 });
+                            if (variant === 'clean') {
+                                layer.setStyle({ fillColor: '#f8fafc', color: '#cbd5e1', weight: 1 }); // Reset to white/slate
+                            } else {
+                                layer.setStyle({ fillOpacity: 0.7, weight: 2 });
+                            }
                         }
                     },
                     click: () => {
