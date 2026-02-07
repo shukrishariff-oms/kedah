@@ -146,8 +146,8 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
     };
 
     const onEachDistrict = (feature, layer) => {
-        // Handle District Labels
-        if (!isDunMode) {
+        // Handle District Labels (Standard Mode)
+        if (!isDunMode && !isParlimenMode) {
             const name = feature.properties.name;
             layer.bindTooltip(name, {
                 permanent: false,
@@ -211,7 +211,7 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
             }
         }
         // Handle Parliament Labels & Interaction
-        else {
+        else if (isParlimenMode) {
             const code = feature.properties.code;
             const name = feature.properties.name;
 
@@ -232,6 +232,10 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                     click: (e) => {
                         // Find matching parliament data from props
                         const pData = politicalData.find(p => p.code === code);
+
+                        // Set spotlight for persistent highlight
+                        setSpotlight({ name: name });
+
                         if (pData) {
                             // Show popup with info
                             const popupContent = `
@@ -292,6 +296,7 @@ const Map = ({ markers = [], districts = [], politicalData = [], politicsMode = 
                 doubleClickZoom={false}
                 touchZoom={false}
                 attributionControl={false}
+                zoomSnap={0.1}
             >
                 <MapInteractionHandler interactive={interactive} lockView={lockView} />
                 <GeoJSON

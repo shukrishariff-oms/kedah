@@ -35,7 +35,7 @@ export default function PoliticsPage() {
 
             {/* Map Section */}
             <div className="mb-24 mt-8">
-                <div className="h-[750px] relative w-full flex flex-col justify-center">
+                <div className="h-[850px] relative w-full flex flex-col justify-center">
                     <div className="absolute top-4 left-4 z-[400]">
                         <h3 className="font-black text-slate-800 text-3xl leading-tight uppercase tracking-tighter">Peta Parlimen</h3>
                         <p className="text-sm text-slate-500 mt-1 font-medium">Klik kawasan untuk info.</p>
@@ -47,8 +47,8 @@ export default function PoliticsPage() {
                         variant="clean"
                         interactive={true}
                         lockView={true}
-                        zoom={9}
-                        center={[5.90, 100.45]}
+                        zoom={8.8}
+                        center={[6.00, 100.4]}
                     />
                 </div>
             </div>
