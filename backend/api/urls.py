@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from .views import (
     DistrictViewSet, PlaceViewSet, PhotoViewSet, StatsView, ParliamentViewSet, DUNViewSet,
-    UserDetailView, HealthCheckView
+    UserDetailView, HealthCheckView, EconomyView
 )
 
 router = DefaultRouter()
@@ -23,4 +23,5 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/me/', UserDetailView.as_view(), name='user_detail'),
     path('health/', HealthCheckView.as_view(), name='health_check'),
+    path('economy/', EconomyView.as_view(), name='economy'),
 ]

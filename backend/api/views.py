@@ -2,6 +2,8 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Count
+from django.core.cache import cache
+import requests
 from .models import District, Place, Photo, Parliament, DUN
 from .serializers import DistrictSerializer, PlaceSerializer, PhotoSerializer, ParliamentSerializer, DUNSerializer
 
@@ -100,3 +102,51 @@ class HealthCheckView(APIView):
 
     def get(self, request):
         return Response({"status": "ok"})
+
+class EconomyView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        cache_key = 'kedah_economy_data'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return Response(cached_data)
+
+        # OpenDOSM API Endpoints
+        datasets = {
+            'gdp': 'gdp_state_real_supply',
+            'hies': 'hies_state',
+            'population': 'population_state'
+        }
+        
+        results = {}
+        
+        try:
+            for key, dataset_id in datasets.items():
+                response = requests.get(f'https://api.data.gov.my/opendosm?id={dataset_id}')
+                response.raise_for_status()
+                data = response.json()
+                
+                # Filter for Kedah
+                kedah_data = [d for d in data if d.get('state') == 'Kedah']
+                
+                # Specific filtering for each dataset to get "overall" stats
+                if key == 'gdp':
+                    kedah_data = [d for d in kedah_data if d.get('sector') == 'overall']
+                elif key == 'population':
+                    kedah_data = [d for d in kedah_data if d.get('age') == 'overall_age' and d.get('sex') == 'overall_sex' and d.get('ethnicity') == 'overall_ethnicity']
+                
+                # Sort by date descending to get the latest
+                if kedah_data:
+                    kedah_data.sort(key=lambda x: x.get('date', ''), reverse=True)
+                    results[key] = kedah_data[0] # Get the latest record
+                else:
+                    results[key] = None
+            
+            # Cache for 24 hours
+            cache.set(cache_key, results, 60*60*24)
+            return Response(results)
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

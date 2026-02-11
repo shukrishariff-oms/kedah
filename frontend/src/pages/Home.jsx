@@ -4,6 +4,7 @@ import { getDistricts } from '../api/districts'
 import { Search, ArrowRight, MapPin, Coffee, Landmark, Mountain } from 'lucide-react'
 import PlaceCard from '../components/PlaceCard'
 import Map from '../components/Map'
+import EconomyWidget from '../components/EconomyWidget'
 
 export default function Home() {
     const [places, setPlaces] = useState([])
@@ -124,6 +125,11 @@ export default function Home() {
                         <PlaceCard key={place.id} place={place} />
                     ))}
                 </div>
+            </section>
+
+            {/* 4. Live Economic Data Section */}
+            <section className="container mx-auto px-6 mb-24">
+                <EconomyWidget />
             </section>
 
             {/* 4. Map Utility Section */}
