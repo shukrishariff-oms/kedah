@@ -5,6 +5,8 @@ set -e
 echo "📦 Applying Database Migrations..."
 cd /app/backend
 python manage.py migrate
+echo "👤 Seeding Admin User..."
+python seed_admin.py
 
 # Start Gunicorn (Background)
 echo "🦄 Starting Gunicorn..."
