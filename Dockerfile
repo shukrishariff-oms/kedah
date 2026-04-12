@@ -7,6 +7,10 @@ RUN apt-get update && apt-get install -y \
     npm \
     gcc \
     libpq-dev \
+    zlib1g-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libfreetype6-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up work directory

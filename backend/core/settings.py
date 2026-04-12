@@ -175,4 +175,12 @@ FRONTEND_ORIGIN = os.getenv('FRONTEND_ORIGIN')
 if FRONTEND_ORIGIN:
     CORS_ALLOWED_ORIGINS.append(FRONTEND_ORIGIN)
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://infokedah.ohmaishoot.com",
+    "https://api.ohmaishoot.com",
+]
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]

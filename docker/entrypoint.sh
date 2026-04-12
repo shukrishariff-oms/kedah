@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Setup Media Directory
+echo "📂 Setting up Media directory..."
+mkdir -p /app/backend/media
+chmod -R 777 /app/backend/media
+
 # Apply Migrations
 echo "📦 Applying Database Migrations..."
 cd /app/backend
